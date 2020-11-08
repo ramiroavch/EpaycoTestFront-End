@@ -1,8 +1,9 @@
 import React from 'react'
+import Card from '../../components/card/Card'
 
 const CheckWallet = (props)=>{
     return(
-        <div className=''>
+        <Card>
             <form>
                 <div className='form-group'>
                     <label>Documento</label>
@@ -14,7 +15,7 @@ const CheckWallet = (props)=>{
                 </div>
                 <button type="submit" className='btn btn-default btn-color'>Solicitar</button>
             </form>
-        </div>
+        </Card>
     )
 }
 

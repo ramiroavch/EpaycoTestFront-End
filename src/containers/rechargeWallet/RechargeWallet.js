@@ -1,8 +1,9 @@
 import React from 'react'
+import Card from '../../components/card/Card'
 
 const RechargeWallet = (props)=>{
     return(
-        <div className=''>
+        <Card>
             <form>
                 <div className='form-group'>
                     <label>Documento</label>
@@ -18,7 +19,7 @@ const RechargeWallet = (props)=>{
                 </div>
                 <button type="submit" className='btn btn-default btn-color'>Recargar</button>
             </form>
-        </div>
+        </Card>
     )
 }
 

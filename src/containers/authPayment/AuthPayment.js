@@ -1,8 +1,9 @@
 import React from 'react'
+import Card from '../../components/card/Card'
 
 const AuthPayment = (props)=>{
     return(
-        <div className=''>
+        <Card>
             <form>
                 <div className='form-group'>
                     <label>Documento</label>
@@ -14,7 +15,7 @@ const AuthPayment = (props)=>{
                 </div>
                 <button type="submit" className='btn btn-default btn-color'>Validar</button>
             </form>
-        </div>
+        </Card>
     )
 }
 
