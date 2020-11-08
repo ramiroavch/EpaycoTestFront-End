@@ -5,3 +5,11 @@
 .btn-color:hover{
     background-color: #ffd055 !important;
 }
+
+.register-form{
+    min-width: 284px;
+}
+
+.error-border{
+    border-color: red !important;
+}
