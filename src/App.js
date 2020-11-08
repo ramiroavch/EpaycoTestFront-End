@@ -8,7 +8,10 @@ import MakePayment from './containers/makePayment/MakePayment'
 import RechargeWallet from './containers/rechargeWallet/RechargeWallet'
 import RegisterClient from './containers/registerClient/RegisterClient'
 import './App.css'
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/js/bootstrap.bundle'
+import 'jquery/src/jquery'
+import 'popper.js'
 
 const App = () =>{
   return (
