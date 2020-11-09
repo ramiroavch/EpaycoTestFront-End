@@ -1,5 +1,5 @@
 const validateEmail = (email)=>{
-    const emailRegex=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/; 
+    const emailRegex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; 
     return (emailRegex.test(email));
 }
 
@@ -9,7 +9,6 @@ const validateNumber = (number)=>{
 }
 
 const validateDecimal = (number)=>{
-    console.log("entreeee");
     const numberRegex= /^[1-9]\d*(\.\d+)?$/;
     return (numberRegex.test(number));
 }
