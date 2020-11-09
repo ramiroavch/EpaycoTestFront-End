@@ -1,7 +1,9 @@
 import React ,{ useState } from 'react'
 import Card from '../../components/card/Card'
 import {validateValue} from '../../commons/Utils'
-
+import axios from '../../axios';
+import Spinner from '../../components/spinner/Spinner';
+import errorHandler from '../../highorder/errorHandler';
 const CheckWallet = (props)=>{
     const [myForm,updateForm] = useState({
         data: {
@@ -16,8 +18,38 @@ const CheckWallet = (props)=>{
                 error:true
             },
         },
-        error:false
+        error:false,
+        balance:null,
+        loading:false
     });
+
+    let actualizarEstado = (data) => {
+        updateForm(Object.assign({}, myForm, data));
+    };
+
+    const getBalance =async (event)=>{
+        event.preventDefault();
+        try{
+            actualizarEstado({
+                loading: true
+            })
+            const response= await axios.post('/client/wallet',
+                {
+                    "document":myForm.data.document.value,
+                    "phone":myForm.data.phone.value
+                }
+            )
+            actualizarEstado({
+                balance: response.data.balance,
+                loading:false
+            })
+        }
+        catch (err){
+            actualizarEstado({
+                loading:false
+            })
+        }
+    }
 
     const updateValue= (event,identifier,type)=>{
         event.preventDefault();
@@ -49,21 +81,23 @@ const CheckWallet = (props)=>{
         }
         return error;
     };
+ 
     return(
-        <Card>
-            <form>
-                <div className='form-group'>
-                    <label>Documento</label>
-                    <input type='number' className={getError('document')  ? 'form-control error-border': 'form-control'} placeholder='Documento' onChange={(event)=>updateValue(event,'document','number')}/>
-                </div>
-                <div className='form-group'>
-                    <label>Telefono</label>
-                    <input type='number' className={getError('phone')  ? 'form-control error-border': 'form-control'} placeholder='Telefono' onChange={(event)=>updateValue(event,'phone','number')}/>
-                </div>
-                <button type="submit" className='btn btn-default btn-color' disabled={!myForm.error}>Solicitar</button>
-            </form>
+        myForm.loading  ? <Spinner/> : 
+        <Card title='Consultar Saldo'>
+                <form>
+                    <div className='form-group'>
+                        <label>Documento</label>
+                        <input type='number' className={getError('document')  ? 'form-control error-border': 'form-control'} placeholder='Documento' onChange={(event)=>updateValue(event,'document','number')}/>
+                    </div>
+                    <div className='form-group'>
+                        <label>Telefono</label>
+                        <input type='number' className={getError('phone')  ? 'form-control error-border': 'form-control'} placeholder='Telefono' onChange={(event)=>updateValue(event,'phone','number')}/>
+                    </div>
+                    <button type="submit" className='btn btn-default btn-color' disabled={!myForm.error} onClick={(event) => getBalance(event)} >Solicitar</button>
+                    {myForm.balance ? <span className='text-success'>Su saldo es {myForm.balance}</span>:null}
+                </form>
         </Card>
     )
 }
-
-export default CheckWallet
+export default errorHandler(CheckWallet,axios);
