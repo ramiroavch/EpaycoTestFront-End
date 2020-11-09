@@ -3,8 +3,9 @@ import './dashboard.css'
 
 const Dashboard = (props)=>{
     return(
-        <div className="flex justify-content-center background align-middle">
-            <span className=''>Dashboard</span>
+        <div className="d-flex flex-column text-info justify-content-top background text-center">
+            <span>Bienvenido a la prueba técnica</span>
+            <span>Hecho por: Ramiro Vargas</span>
         </div>
     )
 }
