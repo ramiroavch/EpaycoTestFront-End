@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import clases from './RegisterClient.css'
+import './RegisterClient.css'
 import Card from '../../components/card/Card.js'
 import {validateValue} from '../../commons/Utils'
+import axios from '../../axios';
+import Spinner from '../../components/spinner/Spinner';
+import errorHandler from '../../highorder/errorHandler';
 
 const RegisterClient = (props)=>{
     const [myForm,updateForm] = useState({
@@ -32,8 +35,42 @@ const RegisterClient = (props)=>{
                 error:true
             }
         },
-        error:false
+        error:false,
+        ok:false
     })
+
+    let actualizarEstado = (data) => {
+        updateForm(Object.assign({}, myForm, data));
+    };
+
+    const register =async (event)=>{
+        event.preventDefault();
+        try{
+            actualizarEstado({
+                loading: true
+            })
+            const response= await axios.post('/client',
+                {
+                    "document":myForm.data.document.value,
+                    "name":myForm.data.name.value,
+                    "lastname":myForm.data.lastname.value,
+                    "email":myForm.data.email.value,
+                    "phone":myForm.data.phone.value
+                }
+            )
+            if(!response.data)
+                throw new Error("Error http");
+            actualizarEstado({
+                ok: true,
+                loading:false
+            })
+        }
+        catch (err){
+            actualizarEstado({
+                loading:false
+            })
+        }
+    }
 
     const updateValue= (event,identifier,type)=>{
         event.preventDefault();
@@ -55,10 +92,6 @@ const RegisterClient = (props)=>{
         return element.error && element.clicked;
     }
 
-    useEffect(()=>{  
-        console.log("hola");
-    },[])
-
     const activateButton=(data)=>{
         const origin= data;
         let error = true;
@@ -71,8 +104,8 @@ const RegisterClient = (props)=>{
         return error;
     }
     return(
-        <Card>
-            <form>
+        <Card title='Registrar Usuario'>
+            <form onSubmit= {register}>
                 <div className='form-group'>
                     <label>Documento</label>
                     <input type='number' className={getError('document')  ? 'form-control error-border': 'form-control'} placeholder='Documento' onChange={(event)=>updateValue(event,'document','string')}/>
@@ -94,9 +127,10 @@ const RegisterClient = (props)=>{
                     <input type='number' className={getError('phone') ? 'form-control error-border': 'form-control'} placeholder='Telefono' onChange={(event)=>updateValue(event,'phone','number')}/>
                 </div>
                 <button type="submit" className='btn btn-default btn-color' disabled={!myForm.error}>Registrar</button>
+                {myForm.ok ? <span className='text-success'>Se registro el cliente con exito!</span>:null}
             </form>
         </Card>
     )
 }
 
-export default RegisterClient
+export default errorHandler(RegisterClient,axios);
