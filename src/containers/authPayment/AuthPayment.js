@@ -1,6 +1,9 @@
 import React,{ useState } from 'react'
 import Card from '../../components/card/Card'
 import {validateValue} from '../../commons/Utils'
+import axios from '../../axios';
+import Spinner from '../../components/spinner/Spinner';
+import errorHandler from '../../highorder/errorHandler';
 
 const AuthPayment = (props)=>{
     const [myForm,updateForm] = useState({
@@ -16,8 +19,60 @@ const AuthPayment = (props)=>{
                 error:true
             },
         },
-        error:false
+        error:false,
+        ok:false,
+        loading:false
     });
+
+    const initState=(ok)=>{
+       updateForm({
+        data: {
+            document: {
+                value: '',
+                clicked:false,
+                error:true
+            },
+            token:{
+                value:'',
+                clicked:false,
+                error:true
+            },
+        },
+        error:false,
+        ok:ok,
+        loading:false
+    });
+    };
+
+    let actualizarEstado = (data) => {
+        updateForm(Object.assign({}, myForm, data));
+    };
+
+    const auth =async (event)=>{
+        event.preventDefault();
+        try{
+            actualizarEstado({
+                loading: true
+            })
+            const response= await axios.post('/payment/auth',
+                {
+                    "document":myForm.data.document.value.toString(),
+                    "token":myForm.data.token.value
+                }
+            )
+            if(!response.data)
+                throw new Error("Error http");
+            actualizarEstado({
+                ok:true,
+                loading:false
+            })
+            initState(true)
+        }
+        catch (err){
+            initState(false);
+        }
+    }
+
     const updateValue= (event,identifier,type)=>{
         event.preventDefault();
         const parent = {...myForm};
@@ -49,8 +104,9 @@ const AuthPayment = (props)=>{
         return error;
     };
     return(
-        <Card>
-            <form>
+        myForm.loading  ? <Spinner/> :
+        <Card title='Autenticar Pago!'>
+            <form onSubmit={auth}>
                 <div className='form-group'>
                     <label>Documento</label>
                     <input type='number' className={getError('document')  ? 'form-control error-border': 'form-control'} placeholder='Documento' onChange={(event)=>updateValue(event,'document','number')}/>
@@ -60,9 +116,10 @@ const AuthPayment = (props)=>{
                     <input type='string' className={getError('token')  ? 'form-control error-border': 'form-control'} placeholder='Token' onChange={(event)=>updateValue(event,'token','string')}/>
                 </div>
                 <button type="submit" className='btn btn-default btn-color' disabled={!myForm.error}>Validar</button>
+                {myForm.ok ? <span className='text-success'>Pago autenticado!!</span>:null}
             </form>
         </Card>
     )
 }
 
-export default AuthPayment
+export default errorHandler(AuthPayment,axios)
