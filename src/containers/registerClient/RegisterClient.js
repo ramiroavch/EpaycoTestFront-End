@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import clases from './RegisterClient.css'
 import Card from '../../components/card/Card.js'
+import {validateValue} from '../../commons/Utils'
 
 const RegisterClient = (props)=>{
     const [myForm,updateForm] = useState({
@@ -30,52 +31,45 @@ const RegisterClient = (props)=>{
                 clicked:false,
                 error:true
             }
-        }
+        },
+        error:false
     })
-    const [error,setError]=useState(false);
 
     const updateValue= (event,identifier,type)=>{
         event.preventDefault();
-        const origin= {...myForm.data};
+        const parent = {...myForm};
+        const origin= {...parent['data']};
+        const err={...parent['error']};
         const element = {...origin[identifier]}
         element.value = event.target.value;
         element.error = validateValue(event.target.value,type);
         element.clicked = true;
         origin[identifier]= element;
-        updateForm ({
-            data:origin
-        });
-        setError(activateButton);
+        parent['data']=origin;
+        parent.error=activateButton(origin);
+        updateForm (parent);
     }
     const getError = (identifier)=>{
         const origin= {...myForm.data};
         const element = {...origin[identifier]};
         return element.error && element.clicked;
     }
-    const validateValue=(value,type)=>{
-        switch (type){
-            case 'string':
-                return ((value==null)||(value.trim()==''));
-            case 'email':
-                return ((value==null)||(value.trim()=='')||!(validateEmail(value)));
-        }
-    }
 
-    const activateButton=()=>{
-        const origin= {...myForm.data};
+    useEffect(()=>{  
+        console.log("hola");
+    },[])
+
+    const activateButton=(data)=>{
+        const origin= data;
         let error = true;
         for (let element in origin){
-            if (origin[element].error==true)
+            if (origin[element].error===true){
                 error =false;
+            }
+                
         }
         return error;
     }
-
-    const validateEmail = (email)=>{
-        const emailRegex=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/; 
-        return (emailRegex.test(email));
-    }
-
     return(
         <Card>
             <form>
@@ -97,9 +91,9 @@ const RegisterClient = (props)=>{
                 </div>
                 <div className='form-group'>
                     <label>Telefono</label>
-                    <input type='number' className={getError('phone') ? 'form-control error-border': 'form-control'} placeholder='Telefono' onChange={(event)=>updateValue(event,'phone','string')}/>
+                    <input type='number' className={getError('phone') ? 'form-control error-border': 'form-control'} placeholder='Telefono' onChange={(event)=>updateValue(event,'phone','number')}/>
                 </div>
-                <button type="submit" className='btn btn-default btn-color' disabled={!error}>Registrar</button>
+                <button type="submit" className='btn btn-default btn-color' disabled={!myForm.error}>Registrar</button>
             </form>
         </Card>
     )
