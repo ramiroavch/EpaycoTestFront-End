@@ -18,13 +18,13 @@ const App = () =>{
     <BrowserRouter>
       <Navbar/>
       <Switch>
-        <Route exact path="/" component={Dashboard}/>
-        <Route exact path="/wallet" component={CheckWallet}/>
-        <Route exact path="/wallet/recharge" component={RechargeWallet}/>
-        <Route exact path="/pay" component={MakePayment}/>
-        <Route exact path="/pay/auth" component={AuthPayment}/>
-        <Route exact path="/register" component={RegisterClient}/>
-        <Route path="*"/>
+          <Route exact path="/" component={Dashboard}/>
+          <Route exact path="/wallet" component={CheckWallet}/>
+          <Route exact path="/wallet/recharge" component={RechargeWallet}/>
+          <Route exact path="/pay" component={MakePayment}/>
+          <Route exact path="/pay/auth" component={AuthPayment}/>
+          <Route exact path="/register" component={RegisterClient}/>
+          <Route path="*"/>
       </Switch>
     </BrowserRouter>
   );
